@@ -7,24 +7,14 @@ class InputManager {
     public static ArrayList keys = new ArrayList();
 
     /**
-    * Updates the input manager
-    * Must be called every frame
+    * Adds a key the input manager
+    * Must be called in keyPressed
+    *
+    * @param the key to be added
     */
-    public static void update() {
-        if(keyPressed) {
-            if(key == CODED) {
-                keys.add(keyCode);
-            } else {
-                keys.add(key);
-            }
-        }
-
-        if(keyReleased) {
-            if(key == CODED) {
-                keys.remove(keys.indexOf(keyCode));
-            } else {
-                keys.remove(keys.indexOf(keyCode));
-            }
-        }
+    public static void addKey(char key) {
+        keys.add(key);
     }
+
+    public static void addKey(keyCode key)
 }
