@@ -3,6 +3,7 @@
 * Stores all currently pressed keys and manages inputs
 */
 class InputManager {
+    //List of currently held keys
     public static ArrayList keys = new ArrayList();
 
     /**
