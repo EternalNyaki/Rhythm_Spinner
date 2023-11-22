@@ -4,6 +4,8 @@ import processing.data.*;
 import processing.event.*;
 import processing.opengl.*;
 
+import java.awt.event.KeyEvent;
+
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.io.File;
@@ -15,6 +17,8 @@ import java.io.IOException;
 
 public class Rhythm_Spinner extends PApplet {
 
+
+
 Spinner spinner = new Spinner();
 
 public void setup() {
@@ -24,7 +28,23 @@ public void setup() {
 }
 
 public void draw() {
+    updateInputs();
+
     spinner.draw();
+}
+
+public void updateInputs() {
+    spinner.update();
+}
+
+public void keyPressed() {
+    InputManager.addKey(keyCode);
+    updateInputs();
+}
+
+public void keyReleased() {
+    InputManager.removeKey(keyCode);
+    updateInputs();
 }
 /**
 * Input Manger Class
@@ -42,7 +62,9 @@ static class InputManager {
     * @param the key to be added
     */
     public static void addKey(int key) {
-        keys.add(key);
+        if(!keys.contains(key)) {
+            keys.add(key);
+        }
     }
 
     /**
@@ -52,7 +74,29 @@ static class InputManager {
     * @param the key to be added
     */
     public static void removeKey(int key) {
-        keys.remove(key);
+        keys.remove(keys.indexOf(key));
+    }
+
+    public static int getDirection() {
+        if(keys.contains(KeyEvent.VK_RIGHT) && keys.contains(KeyEvent.VK_DOWN)) {
+            return 1;
+        } else if(keys.contains(KeyEvent.VK_LEFT) && keys.contains(KeyEvent.VK_DOWN)) {
+            return 3;
+        } else if(keys.contains(KeyEvent.VK_LEFT) && keys.contains(KeyEvent.VK_UP)) {
+            return 5;
+        } else if(keys.contains(KeyEvent.VK_RIGHT) && keys.contains(KeyEvent.VK_UP)) {
+            return 7;
+        } else if(keys.contains(KeyEvent.VK_RIGHT)) {
+            return 0;
+        } else if(keys.contains(KeyEvent.VK_DOWN)) {
+            return 2;
+        } else if(keys.contains(KeyEvent.VK_LEFT)) {
+            return 4;
+        } else if(keys.contains(KeyEvent.VK_UP)) {
+            return 6;
+        }
+
+        return -1;
     }
 }
 class Spinner {
@@ -61,14 +105,9 @@ class Spinner {
     private int mainColor = color(255, 150, 150);
     private int selectedColor = color(255, 150, 255);
     public int selectedSegment = 0;
-    private Spinner instance;
-    
-    public Spinner getInstance() {
-        if(instance == null) {
-            instance = new Spinner();
-        }
 
-        return instance;
+    public void update() {
+        selectedSegment = InputManager.getDirection();
     }
 
     public void draw() {
