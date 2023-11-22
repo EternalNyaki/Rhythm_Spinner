@@ -15,7 +15,7 @@ static class Conductor {
 
     public static void setSong(Song song) {
         bpm = song.bpm;
-        crotchet = 60000 / song.bpm;
+        crotchet = 60 / song.bpm;
         offset = song.offset;
         songFile = song.songFile;
     }
