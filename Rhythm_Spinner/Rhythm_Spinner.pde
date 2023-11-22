@@ -1,4 +1,5 @@
 import java.awt.event.KeyEvent;
+import processing.sound.*;
 
 Spinner spinner = new Spinner();
 
