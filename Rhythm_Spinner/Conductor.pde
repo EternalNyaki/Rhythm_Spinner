@@ -10,12 +10,12 @@ static class Conductor {
     private SoundFile songFile;
 
     public static void update() {
-
+        songPosition = (songFile.position - offset) / crotchet;
     }
 
     public static void setSong(Song song) {
         bpm = song.bpm;
-        crotchet = 60 / song.bpm;
+        crotchet = 60000 / song.bpm;
         offset = song.offset;
         songFile = song.songFile;
     }
