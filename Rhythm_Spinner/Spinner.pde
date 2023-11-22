@@ -5,6 +5,10 @@ class Spinner {
     private color selectedColor = color(255, 150, 255);
     public int selectedSegment = 0;
 
+    public void update() {
+        selectedSegment = InputManager.getDirection();
+    }
+
     public void draw() {
         for(int i = 0; i < 8; i++) {
             if(i == selectedSegment) {

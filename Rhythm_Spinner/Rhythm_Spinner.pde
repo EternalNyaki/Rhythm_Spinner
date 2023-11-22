@@ -1,3 +1,5 @@
+import java.awt.event.KeyEvent;
+
 Spinner spinner = new Spinner();
 
 void setup() {
@@ -7,5 +9,21 @@ void setup() {
 }
 
 void draw() {
+    updateInputs();
+
     spinner.draw();
+}
+
+void updateInputs() {
+    spinner.update();
+}
+
+void keyPressed() {
+    InputManager.addKey(keyCode);
+    updateInputs();
+}
+
+void keyReleased() {
+    InputManager.removeKey(keyCode);
+    updateInputs();
 }
