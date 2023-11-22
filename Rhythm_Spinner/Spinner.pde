@@ -4,15 +4,6 @@ class Spinner {
     private color mainColor = color(255, 150, 150);
     private color selectedColor = color(255, 150, 255);
     public int selectedSegment = 0;
-    private Spinner instance;
-    
-    public Spinner getInstance() {
-        if(instance == null) {
-            instance = new Spinner();
-        }
-
-        return instance;
-    }
 
     public void draw() {
         for(int i = 0; i < 8; i++) {
