@@ -47,6 +47,7 @@ void updateInputs() {
             }
             if(Conductor.songPosition > testSong.chart.get(i).beat + 0.25) {
                 testSong.chart.remove(i);
+                println("Miss :.(");
             } else {
                 break;
             }
@@ -57,6 +58,17 @@ void updateInputs() {
 void keyPressed() {
     InputManager.addKey(keyCode);
     updateInputs();
+
+    if(InputManager.isArcadeButton(keyCode)) {
+        for(int i = 0; i < testSong.chart.size(); i++) {
+            if(testSong.chart.get(i).beat < Conductor.songPosition + 0.25 &&
+               testSong.chart.get(i).beat > Conductor.songPosition - 0.25 &&
+               testSong.chart.get(i).lane == spinner.selectedSegment) {
+                testSong.chart.remove(i);
+                println("Hit!");
+            }
+        }
+    }
 
     if(keyCode == 32) {
         Conductor.setSong(testSong);

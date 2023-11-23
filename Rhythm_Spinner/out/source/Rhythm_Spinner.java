@@ -67,6 +67,7 @@ public void updateInputs() {
             }
             if(Conductor.songPosition > testSong.chart.get(i).beat + 0.25f) {
                 testSong.chart.remove(i);
+                println("Miss :.(");
             } else {
                 break;
             }
@@ -77,6 +78,17 @@ public void updateInputs() {
 public void keyPressed() {
     InputManager.addKey(keyCode);
     updateInputs();
+
+    if(InputManager.isArcadeButton(keyCode)) {
+        for(int i = 0; i < testSong.chart.size(); i++) {
+            if(testSong.chart.get(i).beat < Conductor.songPosition + 0.25f &&
+               testSong.chart.get(i).beat > Conductor.songPosition - 0.25f &&
+               testSong.chart.get(i).lane == spinner.selectedSegment) {
+                testSong.chart.remove(i);
+                println("Hit!");
+            }
+        }
+    }
 
     if(keyCode == 32) {
         Conductor.setSong(testSong);
@@ -165,6 +177,17 @@ static class InputManager {
         }
 
         return -1;
+    }
+
+    public static boolean isArcadeButton(int key) {
+        return (key == KeyEvent.VK_CONTROL ||
+                key == KeyEvent.VK_ALT ||
+                key == KeyEvent.VK_SPACE ||
+                key == KeyEvent.VK_SHIFT ||
+                key == KeyEvent.VK_Z ||
+                key == KeyEvent.VK_X ||
+                key == KeyEvent.VK_C ||
+                key == KeyEvent.VK_5);
     }
 }
 class Note {
