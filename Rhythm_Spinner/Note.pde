@@ -9,8 +9,8 @@ class Note {
     }
 
     public void update() {
-        this.position = new PVector(sin(radians(this.lane * 45)) * (this.beat - Conductor.songPosition) + 640,
-                                    cos(radians(this.lane * 45)) * (this.beat - Conductor.songPosition) + 512);
+        this.position = new PVector(sin(radians(this.lane * 45)) * ((this.beat - Conductor.songPosition) * 100 + spinner.radius) + 640,
+                                    cos(radians(this.lane * 45)) * ((this.beat - Conductor.songPosition) * 100 + spinner.radius) + 512);
     }
 
     public void draw() {

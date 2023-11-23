@@ -1,6 +1,6 @@
 class Spinner {
     private PVector position = new PVector(640, 512);
-    private float radius = 80;
+    public float radius = 80;
     private color mainColor = color(255, 150, 150);
     private color selectedColor = color(255, 150, 255);
     public int selectedSegment = 0;
