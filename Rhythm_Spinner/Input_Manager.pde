@@ -8,6 +8,7 @@ static class InputManager {
     public static ArrayList<Integer> keys = new ArrayList<Integer>();
 
     /**
+    * Add Key method
     * Adds a key to the input manager
     * Must be called in keyPressed
     *
@@ -20,8 +21,9 @@ static class InputManager {
     }
 
     /**
+    * Remove Key method
     * Removes a key from the input manager
-    * Must be called in keyPressed
+    * Must be called in keyRemoved
     *
     * @param the key to be added
     */
@@ -29,6 +31,13 @@ static class InputManager {
         keys.remove(keys.indexOf(key));
     }
 
+    /**
+    * Get Direction method
+    * Returns the direction that is currently pressing on the arrow keys (including diagonals)
+    * Value is 0-indexed starting from the right and increasing clockwise
+    *
+    * @return the direction being input on the arrow keys (0-index from right, increasing clockwise)
+    */
     public static int getDirection() {
         if(keys.contains(KeyEvent.VK_RIGHT) && keys.contains(KeyEvent.VK_DOWN)) {
             return 1;
@@ -51,6 +60,13 @@ static class InputManager {
         return -1;
     }
 
+    /**
+    * Is Arcade Button method
+    * Returns whether of not the key being pressed in one of the buttons on the arcade cabinet
+    * (Buttons are assigned to ctrl, alt, space, shift, z, x, c, and 5)
+    *
+    * @return true if key is an arcade cabinet button, otherwise false
+    */
     public static boolean isArcadeButton(int key) {
         return (key == KeyEvent.VK_CONTROL ||
                 key == KeyEvent.VK_ALT ||
