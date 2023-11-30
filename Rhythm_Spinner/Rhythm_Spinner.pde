@@ -11,6 +11,8 @@ ArrayList<Note> testChart = new ArrayList<Note>();
 //Test song
 Song testSong;
 
+float offset = 80;
+
 void setup() {
     //Setup screen
     size(1280, 1024);

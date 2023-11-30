@@ -21,45 +21,68 @@ public class Rhythm_Spinner extends PApplet {
 
 
 
+//Central spinner for rhythm game
 Spinner spinner = new Spinner();
+
+//Test song file
 SoundFile testFile;
+//Chart for test song
 ArrayList<Note> testChart = new ArrayList<Note>();
+//Test song
 Song testSong;
 
+float offset = 80;
+
 public void setup() {
+    //Setup screen
     /* size commented out by preprocessor */;
+
+    //Set shape display modes
     rectMode(CENTER);
     ellipseMode(RADIUS);
 
+    //Load sound files
     testFile = new SoundFile(this, "Test Song.wav");
 
+    //Create chart
     testChart.add(new Note(0, 1));
     testChart.add(new Note(4, 2));
     testChart.add(new Note(0, 3.5f));
     testChart.add(new Note(4, 4));
 
+    //Initialize songs
     testSong = new Song(120, 0.002f, testFile, testChart, "Test Song", "Me");
 }
 
 public void draw() {
+    //Clear screen
     background(255);
 
     updateInputs();
 
+    //Draw spinner
     spinner.draw();
 
+    //Draw notes
     for(Note note : testSong.chart) {
         note.draw();
     }
 }
 
+/**
+* Update Inputs function
+* For anything that want's to be run more than once a frame
+* Function runs in draw and whenever inputs are updated (keyPressed() and keyReleased())
+*/
 public void updateInputs() {
+    //Update objects
     spinner.update();
     Conductor.update();
-
     for(Note note : testSong.chart) {
         note.update();
     }
+
+    //Remove missed notes
     for(int i = 0; i < testSong.chart.size(); i++) {
         while(true) {
             if(testSong.chart.size() <= 0) {
@@ -76,9 +99,11 @@ public void updateInputs() {
 }
 
 public void keyPressed() {
+    //Update inputs
     InputManager.addKey(keyCode);
     updateInputs();
 
+    //If an arcade button is pressed, check if a note has been hit
     if(InputManager.isArcadeButton(keyCode)) {
         for(int i = 0; i < testSong.chart.size(); i++) {
             if(testSong.chart.get(i).beat < Conductor.songPosition + 0.25f &&
@@ -90,28 +115,40 @@ public void keyPressed() {
         }
     }
 
+    //If space is pressed, start song (for debugging and testing only, will be removed in future)
     if(keyCode == 32) {
         Conductor.setSong(testSong);
         testSong.songFile.play();
-        println(Conductor.crotchet);
     }
 }
 
 public void keyReleased() {
+    //Update inputs
     InputManager.removeKey(keyCode);
     updateInputs();
 }
 /**
 * Conductor class
+* Controls timing for rhythm elements
 * Taken from https://www.reddit.com/r/gamedev/comments/2fxvk4/heres_a_quick_and_dirty_guide_i_just_wrote_how_to/
 */
 static class Conductor {
+    //Beat per minute of the song currently being played
     private static int bpm;
+    //Length of a beat of the song currently being played (in seconds)
     private static float crotchet;
+    //Time before the song actually starts in the audio file (to account for space required for metadata) (in seconds)
     private static float offset;
+
+    //Position in the current song (in beats)
     public static float songPosition;
+    //Audio file for the song currently being played
     private static SoundFile songFile;
 
+    /**
+    * Update method
+    * Runs in updateInputs()
+    */
     public static void update() {
         if(songFile != null) {
 
@@ -119,6 +156,12 @@ static class Conductor {
         }
     }
 
+    /**
+    * Set Song method
+    * Sets the current song being played
+    *
+    * @param song to be played
+    */
     public static void setSong(Song song) {
         bpm = song.bpm;
         crotchet = (float) 60 / song.bpm;
@@ -136,6 +179,7 @@ static class InputManager {
     public static ArrayList<Integer> keys = new ArrayList<Integer>();
 
     /**
+    * Add Key method
     * Adds a key to the input manager
     * Must be called in keyPressed
     *
@@ -148,8 +192,9 @@ static class InputManager {
     }
 
     /**
+    * Remove Key method
     * Removes a key from the input manager
-    * Must be called in keyPressed
+    * Must be called in keyRemoved
     *
     * @param the key to be added
     */
@@ -157,6 +202,13 @@ static class InputManager {
         keys.remove(keys.indexOf(key));
     }
 
+    /**
+    * Get Direction method
+    * Returns the direction that is currently pressing on the arrow keys (including diagonals)
+    * Value is 0-indexed starting from the right and increasing clockwise
+    *
+    * @return the direction being input on the arrow keys (0-index from right, increasing clockwise)
+    */
     public static int getDirection() {
         if(keys.contains(KeyEvent.VK_RIGHT) && keys.contains(KeyEvent.VK_DOWN)) {
             return 1;
@@ -179,6 +231,13 @@ static class InputManager {
         return -1;
     }
 
+    /**
+    * Is Arcade Button method
+    * Returns whether of not the key being pressed in one of the buttons on the arcade cabinet
+    * (Buttons are assigned to ctrl, alt, space, shift, z, x, c, and 5)
+    *
+    * @return true if key is an arcade cabinet button, otherwise false
+    */
     public static boolean isArcadeButton(int key) {
         return (key == KeyEvent.VK_CONTROL ||
                 key == KeyEvent.VK_ALT ||
@@ -190,9 +249,17 @@ static class InputManager {
                 key == KeyEvent.VK_5);
     }
 }
+/**
+* Note class
+* Keeps track of and draws an individual note
+*/
 class Note {
+    //Lane that the note is in (0-indexed from right, increments clockwise)
     private int lane;
+    //Timing of the note (in beats)
     private float beat;
+
+    //Position of the note on the screen
     public PVector position;
 
     Note(int lane, float beat) {
@@ -200,22 +267,42 @@ class Note {
         this.beat = beat;
     }
 
+    /**
+    * Update method
+    * Called in updateInputs
+    */
     public void update() {
-        this.position = new PVector(sin(radians(this.lane * 45)) * ((this.beat - Conductor.songPosition) * 100 + spinner.radius) + 640,
-                                    cos(radians(this.lane * 45)) * ((this.beat - Conductor.songPosition) * 100 + spinner.radius) + 512);
+        this.position = new PVector(sin(radians(this.lane * 45)) * ((this.beat - Conductor.songPosition) * 100 + spinner.radius - offset) + 640,
+                                    cos(radians(this.lane * 45)) * ((this.beat - Conductor.songPosition) * 100 + spinner.radius - offset) + 512);
     }
 
+    /**
+    * Draw method
+    * Draws the note to the screen
+    * Runs in draw()
+    */
     public void draw() {
         float radius = dist(640, 512, this.position.x, this.position.y);
         noFill();
         arc(640, 512, radius, radius, radians(-22.5f + (this.lane * 45)), radians(-22.5f + ((this.lane + 1) * 45)));
     }
 }
+/**
+* Song class
+* Stores all data related to a song
+*/
 class Song {
+    //Beats per minute
     public int bpm;
+    //Time before the song actually starts in the audio file (to account for space required for metadata) (in seconds)
     public float offset;
+
+    //Audio file associated with song
     public SoundFile songFile;
+    //Chart associated with song
     public ArrayList<Note> chart;
+
+    //Name of song and artist (not currently used)
     public String title, artist;
 
     Song(int bpm, float offset, SoundFile songFile, ArrayList<Note> chart, String title, String artist) {
@@ -227,17 +314,37 @@ class Song {
         this.artist = artist;
     }
 }
+/**
+* Spinner class
+* Handles displaying the central spinner that the player controls
+*/
 class Spinner {
+    //The position of the center of the spinner
     private PVector position = new PVector(640, 512);
+    //The radius of the spinner (in pixels)
     public float radius = 80;
+
+    //The colour of unselected segments of the spinner
     private int mainColor = color(255, 150, 150);
+    //The colour of the selected segment of teh spinner
     private int selectedColor = color(255, 150, 255);
+
+    //The currently selected segment of the spinner (0 is the east segment, increments clockwise from there)
     public int selectedSegment = 0;
 
+    /**
+    * Update method
+    * Runs in updateInputs()
+    */
     public void update() {
         selectedSegment = InputManager.getDirection();
     }
 
+    /**
+    * Draw method
+    * Draws the spinner to the screen
+    * Runs in draw()
+    */
     public void draw() {
         for(int i = 0; i < 8; i++) {
             if(i == selectedSegment) {
