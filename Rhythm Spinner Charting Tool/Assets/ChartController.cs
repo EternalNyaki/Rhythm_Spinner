@@ -1,29 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ChartController : MonoBehaviour
 {
-    private List<Note> notes = new List<Note>();
+    private List<Note> notes;
     public Vector2 origin;
     public Vector2 size;
 
-    public void addNote(Transform transform)
+    public ButtonController[,] buttons;
+
+    public void Awake()
     {
-        int lane = (int)((transform.position.x - origin.x) / size.x);
-        float beat = (transform.position.y - origin.y) / size.y;
-        notes.Add(new Note(lane, beat));
+        notes = new List<Note>();
+        buttons = new ButtonController[1680, 8];
+        for(int i = 0; i < buttons.GetLength(0); i++)
+        {
+            for(int j = 0; j < buttons.GetLength(1);  j++)
+            {
+                buttons[i, j] = gameObject.GetComponentsInChildren<ButtonController>()[i * 8 + j];
+            }
+        }
     }
 
-    public void removeNote(Transform transform)
+    public void addNote(int row, int column)
     {
-        int lane = (int)((transform.position.x - origin.x) / size.x);
-        float beat = (transform.position.y - origin.y) / size.y;
+        int lane = row;
+        float beat = (float)column / 4;
+        notes.Add(new Note(lane, beat));
+        Debug.Log(lane + ", " + beat);
+    }
+
+    public void removeNote(int row, int column)
+    {
+        int lane = row;
+        float beat = (float)column / 4;
         foreach (Note note in notes)
         {
             if(note.lane == lane && note.beat == beat)
             {
                 notes.Remove(note);
+                Debug.Log(note.lane + ", " + note.beat);
                 break;
             }
         }
