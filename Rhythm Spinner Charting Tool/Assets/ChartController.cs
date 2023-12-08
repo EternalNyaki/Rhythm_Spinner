@@ -70,6 +70,11 @@ public class ChartController : MonoBehaviour
         filePath = path;
     }
 
+    public void clear()
+    {
+        notes.Clear();
+    }
+
     public void save()
     {
         Chart chart = new Chart(notes.ToArray());
