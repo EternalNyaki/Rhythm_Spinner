@@ -4,17 +4,24 @@
 */
 class Spinner {
     //The position of the center of the spinner
-    private PVector position = new PVector(640, 512);
+    private PVector position;
     //The radius of the spinner (in pixels)
-    public float radius = 80;
+    public float radius;
 
     //The colour of unselected segments of the spinner
-    private color mainColor = color(255, 150, 150);
+    private color mainColor;
     //The colour of the selected segment of teh spinner
-    private color selectedColor = color(255, 150, 255);
+    private color selectedColor;
 
     //The currently selected segment of the spinner (0 is the east segment, increments clockwise from there)
     public int selectedSegment = 0;
+
+    public Spinner() {
+        position = new PVector(640, 512);
+        radius = 80;
+        mainColor = color(255, 150, 150);
+        selectedColor = color(255, 150, 255);
+    }
 
     /**
     * Update method
