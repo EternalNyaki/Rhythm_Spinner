@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,14 +15,11 @@ public class ButtonController : MonoBehaviour
 
     private bool isOn = false;
 
-    private RectTransform rectTransform;
-    private Vector2 position;
     private Image image;
     private ChartController chartController;
 
     public void Start()
     {
-        rectTransform = GetComponent<RectTransform>();
         image = GetComponent<Image>();
         chartController = gameObject.GetComponentInParent<ChartController>();
 
@@ -39,16 +37,30 @@ public class ButtonController : MonoBehaviour
         }
     }
 
+    public void Update()
+    {
+        isOn = false;
+        image.color = offColor;
+        foreach (Note note in chartController.notes)
+        {
+            if (note.lane == row && note.beat == ((float)column / 4))
+            {
+                isOn = true;
+                image.color = onColor;
+                break;
+            }
+        }
+
+    }
+
     public void onPressed()
     {
         if(isOn)
         {
-            image.color = offColor;
             chartController.removeNote(row, column);
         } 
         else
         {
-            image.color = onColor;
             chartController.addNote(row, column);
         }
     }
