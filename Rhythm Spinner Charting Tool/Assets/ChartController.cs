@@ -11,6 +11,8 @@ public class ChartController : MonoBehaviour
     public Vector2 origin;
     public Vector2 size;
 
+    public bool swing = false;
+
     public string chartName;
     public string fileName;
     public string filePath;
@@ -36,6 +38,11 @@ public class ChartController : MonoBehaviour
     {
         int lane = row;
         float beat = (float)column / 4;
+        if(swing && beat % 0.5 != 0)
+        {
+            beat += 0.1667f;
+        }
+
         notes.Add(new Note(lane, beat));
         Debug.Log(lane + ", " + beat);
     }
@@ -44,6 +51,11 @@ public class ChartController : MonoBehaviour
     {
         int lane = row;
         float beat = (float)column / 4;
+        if (swing && beat % 0.5 != 0)
+        {
+            beat += 0.1667f;
+        }
+
         foreach (Note note in notes)
         {
             if(note.lane == lane && note.beat == beat)

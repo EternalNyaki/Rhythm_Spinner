@@ -43,7 +43,12 @@ public class ButtonController : MonoBehaviour
         image.color = offColor;
         foreach (Note note in chartController.notes)
         {
-            if (note.lane == row && note.beat == ((float)column / 4))
+            float beat = (float)column / 4;
+            if(chartController.swing && beat % 0.5 != 0)
+            {
+                beat += 0.1667f;
+            }
+            if (note.lane == row && note.beat == beat)
             {
                 isOn = true;
                 image.color = onColor;
