@@ -8,17 +8,20 @@ class Song {
     //Time before the song actually starts in the audio file (to account for space required for metadata) (in seconds)
     public float offset;
 
+    public float countIn;
+
     //Audio file associated with song
     public SoundFile songFile;
     //Chart associated with song
-    public ArrayList<Note> chart;
+    public Note[] chart;
 
     //Name of song and artist (not currently used)
     public String title, artist;
 
-    Song(int bpm, float offset, SoundFile songFile, ArrayList<Note> chart, String title, String artist) {
+    Song(int bpm, float offset, float countIn, SoundFile songFile, Note[] chart, String title, String artist) {
         this.bpm = bpm;
         this.offset = offset;
+        this.countIn = countIn;
         this.songFile = songFile;
         this.chart = chart;
         this.title = title;

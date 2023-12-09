@@ -6,12 +6,18 @@ Spinner spinner = new Spinner();
 
 //Test song file
 SoundFile testFile;
+SoundFile topOfTheWaveFile;
 //Chart for test song
-ArrayList<Note> testChart = new ArrayList<Note>();
+Note[] testChart;
+Note[] topOfTheWaveChart;
 //Test song
 Song testSong;
 
-float offset = 80;
+Song topOfTheWave;
+
+float offset = 0;
+
+float tolerance = 0.1;
 
 void setup() {
     //Setup screen
@@ -23,15 +29,20 @@ void setup() {
 
     //Load sound files
     testFile = new SoundFile(this, "Test Song.wav");
+    topOfTheWaveFile = new SoundFile(this, "Songs/Top-of-the-Wave-(Vlad-Gluschenko)/vlad-gluschenko-top-of-the-wave.wav");
 
-    //Create chart
-    testChart.add(new Note(0, 1));
-    testChart.add(new Note(4, 2));
-    testChart.add(new Note(0, 3.5));
-    testChart.add(new Note(4, 4));
+    //Load charts
+    JSONObject json = loadJSONObject("Songs/Top-of-the-Wave-(Vlad-Gluschenko)/chart.json");
+    JSONArray chart = json.getJSONArray("chart");
+    topOfTheWaveChart = new Note[chart.size()];
+    for(int i = 0; i < chart.size(); i++) {
+        topOfTheWaveChart[i] = new Note(chart.getJSONObject(i).getInt("lane"), chart.getJSONObject(i).getFloat("beat"));
+    }
 
     //Initialize songs
-    testSong = new Song(120, 0.002, testFile, testChart, "Test Song", "Me");
+    topOfTheWave = new Song(126, 1.2, 2.5, topOfTheWaveFile, topOfTheWaveChart, "Top of the Wave", "Vlad Gluschenko");
+
+    Conductor.setSong(topOfTheWave);
 }
 
 void draw() {
@@ -44,7 +55,7 @@ void draw() {
     spinner.draw();
 
     //Draw notes
-    for(Note note : testSong.chart) {
+    for(Note note : Conductor.chart) {
         note.draw();
     }
 }
@@ -58,18 +69,21 @@ void updateInputs() {
     //Update objects
     spinner.update();
     Conductor.update();
-    for(Note note : testSong.chart) {
-        note.update();
+    Conductor.curTime = (float) millis() / 1000;
+    if(Conductor.chart != null) {
+        for(Note note : Conductor.chart) {
+            note.update();
+        }
     }
 
     //Remove missed notes
-    for(int i = 0; i < testSong.chart.size(); i++) {
+    for(int i = 0; i < Conductor.chart.size(); i++) {
         while(true) {
-            if(testSong.chart.size() <= 0) {
+            if(Conductor.chart.size() <= 0) {
                 break;
             }
-            if(Conductor.songPosition > testSong.chart.get(i).beat + 0.25) {
-                testSong.chart.remove(i);
+            if(Conductor.songPosition > Conductor.chart.get(i).beat + tolerance) {
+                Conductor.chart.remove(i);
                 println("Miss :.(");
             } else {
                 break;
@@ -85,11 +99,11 @@ void keyPressed() {
 
     //If an arcade button is pressed, check if a note has been hit
     if(InputManager.isArcadeButton(keyCode)) {
-        for(int i = 0; i < testSong.chart.size(); i++) {
-            if(testSong.chart.get(i).beat < Conductor.songPosition + 0.25 &&
-               testSong.chart.get(i).beat > Conductor.songPosition - 0.25 &&
-               testSong.chart.get(i).lane == spinner.selectedSegment) {
-                testSong.chart.remove(i);
+        for(int i = 0; i < Conductor.chart.size(); i++) {
+            if(Conductor.chart.get(i).beat < Conductor.songPosition + tolerance &&
+               Conductor.chart.get(i).beat > Conductor.songPosition - tolerance &&
+               Conductor.chart.get(i).lane == spinner.selectedSegment) {
+                Conductor.chart.remove(i);
                 println("Hit!");
             }
         }
@@ -97,8 +111,7 @@ void keyPressed() {
 
     //If space is pressed, start song (for debugging and testing only, will be removed in future)
     if(keyCode == 32) {
-        Conductor.setSong(testSong);
-        testSong.songFile.play();
+        Conductor.playSong();
     }
 }
 
