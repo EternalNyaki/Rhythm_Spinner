@@ -8,15 +8,18 @@ Spinner spinner = new Spinner();
 SoundFile testFile;
 SoundFile topOfTheWaveFile;
 SoundFile cloudsFile;
+SoundFile tonightFile;
 //Chart for test song
 Note[] testChart;
 Note[] topOfTheWaveChart;
 Note[] cloudsChart;
+Note[] tonightChart;
 //Test song
 Song testSong;
 
 Song topOfTheWave;
 Song clouds;
+Song tonight;
 
 float offset = 0;
 
@@ -34,26 +37,23 @@ void setup() {
     testFile = new SoundFile(this, "Test Song.wav");
     topOfTheWaveFile = new SoundFile(this, "Songs/Top-of-the-Wave-(Vlad-Gluschenko)/vlad-gluschenko-top-of-the-wave.wav");
     cloudsFile = new SoundFile(this, "Songs/Clouds-(MusicbyAden)/musicbyaden-clouds.wav");
+    tonightFile = new SoundFile(this, "Songs/tonight-(Rexlambo)/rexlambo-tonight.wav");
 
     //Load charts
-    JSONObject waveJson = loadJSONObject("Songs/Top-of-the-Wave-(Vlad-Gluschenko)/chart.json");
-    JSONObject cloudsJson = loadJSONObject("Songs/Clouds-(MusicbyAden)/chart.json");
-    JSONArray waveJsonChart = waveJson.getJSONArray("chart");
-    JSONArray cloudsJsonChart = cloudsJson.getJSONArray("chart");
-    topOfTheWaveChart = new Note[waveJsonChart.size()];
-    cloudsChart = new Note[cloudsJsonChart.size()];
-    for(int i = 0; i < waveJsonChart.size(); i++) {
-        topOfTheWaveChart[i] = new Note(waveJsonChart.getJSONObject(i).getInt("lane"), waveJsonChart.getJSONObject(i).getFloat("beat"));
-    }
-    for(int i = 0; i < cloudsJsonChart.size(); i++) {
-        cloudsChart[i] = new Note(cloudsJsonChart.getJSONObject(i).getInt("lane"), cloudsJsonChart.getJSONObject(i).getFloat("beat"));
-    }
+    JSONObject waveJSON = loadJSONObject("Songs/Top-of-the-Wave-(Vlad-Gluschenko)/chart.json");
+    JSONObject cloudsJSON = loadJSONObject("Songs/Clouds-(MusicbyAden)/chart.json");
+    JSONObject tonightJSON = loadJSONObject("Songs/tonight-(Rexlambo)/chart.json");
+    
+    topOfTheWaveChart = loadChartFromJSON(waveJSON);
+    cloudsChart = loadChartFromJSON(cloudsJSON);
+    tonightChart = loadChartFromJSON(tonightJSON);
 
     //Initialize songs
     topOfTheWave = new Song(126, -1.2, 2.5, topOfTheWaveFile, topOfTheWaveChart, "Top of the Wave", "Vlad Gluschenko");
     clouds = new Song(120, 0, 4, cloudsFile, cloudsChart, "Clouds", "MusicbyAden");
+    tonight = new Song(128, 0.127, 4, tonightFile, tonightChart, "tonight", "Rexlambo");
 
-    Conductor.setSong(clouds);
+    Conductor.setSong(tonight);
 }
 
 void draw() {
@@ -130,4 +130,19 @@ void keyReleased() {
     //Update inputs
     InputManager.removeKey(keyCode);
     updateInputs();
+}
+
+Note[] loadChartFromJSON(JSONObject json) {
+    JSONArray chart;
+    try {
+        chart = json.getJSONArray("chart");
+    } catch(Exception e) {
+        println("No chart");
+        return null;
+    }
+    Note[] output = new Note[chart.size()];
+    for(int i = 0; i < chart.size(); i++) {
+        output[i] = new Note(chart.getJSONObject(i).getInt("lane"), chart.getJSONObject(i).getFloat("beat"));
+    }
+    return output;
 }
