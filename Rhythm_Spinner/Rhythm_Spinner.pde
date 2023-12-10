@@ -7,13 +7,16 @@ Spinner spinner = new Spinner();
 //Test song file
 SoundFile testFile;
 SoundFile topOfTheWaveFile;
+SoundFile cloudsFile;
 //Chart for test song
 Note[] testChart;
 Note[] topOfTheWaveChart;
+Note[] cloudsChart;
 //Test song
 Song testSong;
 
 Song topOfTheWave;
+Song clouds;
 
 float offset = 0;
 
@@ -30,19 +33,27 @@ void setup() {
     //Load sound files
     testFile = new SoundFile(this, "Test Song.wav");
     topOfTheWaveFile = new SoundFile(this, "Songs/Top-of-the-Wave-(Vlad-Gluschenko)/vlad-gluschenko-top-of-the-wave.wav");
+    cloudsFile = new SoundFile(this, "Songs/Clouds-(MusicbyAden)/musicbyaden-clouds.wav");
 
     //Load charts
-    JSONObject json = loadJSONObject("Songs/Top-of-the-Wave-(Vlad-Gluschenko)/chart.json");
-    JSONArray chart = json.getJSONArray("chart");
-    topOfTheWaveChart = new Note[chart.size()];
-    for(int i = 0; i < chart.size(); i++) {
-        topOfTheWaveChart[i] = new Note(chart.getJSONObject(i).getInt("lane"), chart.getJSONObject(i).getFloat("beat"));
+    JSONObject waveJson = loadJSONObject("Songs/Top-of-the-Wave-(Vlad-Gluschenko)/chart.json");
+    JSONObject cloudsJson = loadJSONObject("Songs/Clouds-(MusicbyAden)/chart.json");
+    JSONArray waveJsonChart = waveJson.getJSONArray("chart");
+    JSONArray cloudsJsonChart = cloudsJson.getJSONArray("chart");
+    topOfTheWaveChart = new Note[waveJsonChart.size()];
+    cloudsChart = new Note[cloudsJsonChart.size()];
+    for(int i = 0; i < waveJsonChart.size(); i++) {
+        topOfTheWaveChart[i] = new Note(waveJsonChart.getJSONObject(i).getInt("lane"), waveJsonChart.getJSONObject(i).getFloat("beat"));
+    }
+    for(int i = 0; i < cloudsJsonChart.size(); i++) {
+        cloudsChart[i] = new Note(cloudsJsonChart.getJSONObject(i).getInt("lane"), cloudsJsonChart.getJSONObject(i).getFloat("beat"));
     }
 
     //Initialize songs
-    topOfTheWave = new Song(126, 1.2, 2.5, topOfTheWaveFile, topOfTheWaveChart, "Top of the Wave", "Vlad Gluschenko");
+    topOfTheWave = new Song(126, -1.2, 2.5, topOfTheWaveFile, topOfTheWaveChart, "Top of the Wave", "Vlad Gluschenko");
+    clouds = new Song(120, 0, 4, cloudsFile, cloudsChart, "Clouds", "MusicbyAden");
 
-    Conductor.setSong(topOfTheWave);
+    Conductor.setSong(clouds);
 }
 
 void draw() {

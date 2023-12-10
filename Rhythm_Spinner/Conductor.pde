@@ -37,7 +37,7 @@ static class Conductor {
                 println(countIn * crotchet);
                 songFile.play();
             }
-            songPosition = (songFile.position() + offset) / crotchet;
+            songPosition = (songFile.position() - offset) / crotchet;
         }
     }
 

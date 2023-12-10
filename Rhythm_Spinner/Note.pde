@@ -21,8 +21,8 @@ class Note {
     * Called in updateInputs
     */
     public void update() {
-        this.position = new PVector(sin(radians(this.lane * 45)) * ((this.beat - Conductor.songPosition) * 100 + spinner.radius - offset) + 640,
-                                    cos(radians(this.lane * 45)) * ((this.beat - Conductor.songPosition) * 100 + spinner.radius - offset) + 512);
+        this.position = new PVector(sin(radians(this.lane * 45)) * ((this.beat - Conductor.songPosition) * 200 + spinner.radius - offset) + 640,
+                                    cos(radians(this.lane * 45)) * ((this.beat - Conductor.songPosition) * 200 + spinner.radius - offset) + 512);
     }
 
     /**
