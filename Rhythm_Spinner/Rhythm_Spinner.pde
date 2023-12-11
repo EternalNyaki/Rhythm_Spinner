@@ -1,5 +1,5 @@
 import java.awt.event.KeyEvent;
-import java.util.function.Function;
+import java.lang.Runnable;
 import processing.sound.*;
 
 //Central spinner for rhythm game

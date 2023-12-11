@@ -5,9 +5,9 @@ class Button {
     private color selectedColor;
     private String label;
 
-    private Function<void, void> onPressedFunction;
+    private Runnable onPressedFunction;
 
-    public Button(PVector position, PVector size, color baseColor, color selectedColor, String label, Function<void, void> onPressedFunction) {
+    public Button(PVector position, PVector size, color baseColor, color selectedColor, String label, Runnable onPressedFunction) {
         this.position = position;
         this.size = size;
         this.baseColor = baseColor;
@@ -27,6 +27,6 @@ class Button {
     }
 
     public void press() {
-        this.onPressedFunction.apply();
+        this.onPressedFunction.run();
     }
 }
