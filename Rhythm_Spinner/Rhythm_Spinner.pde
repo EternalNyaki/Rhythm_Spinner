@@ -1,4 +1,5 @@
 import java.awt.event.KeyEvent;
+import java.util.function.Function;
 import processing.sound.*;
 
 //Central spinner for rhythm game
@@ -32,6 +33,7 @@ void setup() {
     //Set shape display modes
     rectMode(CENTER);
     ellipseMode(RADIUS);
+    textAlign(CENTER, CENTER);
 
     //Load sound files
     testFile = new SoundFile(this, "Test Song.wav");
