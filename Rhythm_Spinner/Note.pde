@@ -31,8 +31,8 @@ class Note {
     * Runs in draw()
     */
     public void draw() {
-        float radius = dist(640, 512, this.position.x, this.position.y);
+        float radius = dist(screenCenter.x, screenCenter.y, this.position.x, this.position.y);
         noFill();
-        arc(640, 512, radius, radius, radians(-22.5 + (this.lane * 45)), radians(-22.5 + ((this.lane + 1) * 45)));
+        arc(screenCenter.x, screenCenter.y, radius, radius, radians(-22.5 + (this.lane * 45)), radians(-22.5 + ((this.lane + 1) * 45)));
     }
 }

@@ -10,8 +10,8 @@ class Scene {
         this.name = name;
         this.updateFunction = updateFunction;
         this.drawFunction = drawFunction;
-        this.keyPressedFunction = () -> updateInputs();
-        this.keyReleasedFunction = () -> updateInputs();
+        this.keyPressedFunction = () -> {};
+        this.keyReleasedFunction = () -> {};
     }
 
     public Scene(String name, Runnable updateFunction, Runnable drawFunction, Runnable keyPressedFunction) {
@@ -19,7 +19,7 @@ class Scene {
         this.updateFunction = updateFunction;
         this.drawFunction = drawFunction;
         this.keyPressedFunction = keyPressedFunction;
-        this.keyReleasedFunction = () -> updateInputs();
+        this.keyReleasedFunction = () -> {};
     }
 
     public Scene(String name, Runnable updateFunction, Runnable drawFunction, Runnable keyPressedFunction, Runnable keyReleasedFunction) {

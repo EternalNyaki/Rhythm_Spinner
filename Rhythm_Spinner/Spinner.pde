@@ -17,7 +17,7 @@ class Spinner {
     public int selectedSegment = 0;
 
     public Spinner() {
-        position = new PVector(640, 512);
+        position = screenCenter;
         radius = 80;
         mainColor = color(255, 150, 150);
         selectedColor = color(255, 150, 255);

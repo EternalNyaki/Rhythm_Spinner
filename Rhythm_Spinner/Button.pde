@@ -23,6 +23,7 @@ class Button {
             fill(this.baseColor);
         }
         rect(this.position.x, this.position.y, this.size.x, this.size.y);
+        fill(0);
         text(this.label, this.position.x, this.position.y, this.size.x, this.size.y);
     }
 

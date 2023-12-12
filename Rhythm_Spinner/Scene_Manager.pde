@@ -1,9 +1,18 @@
-static class SceneManager {
-    public static final Scene[] scenes = new Scene[];
+class SceneManager {
+    public Scene[] scenes;
 
-    public static Scene currentScene = scenes[0];
+    public Scene currentScene;
 
-    public static void setScene(int sceneID) {
+    public SceneManager(Scene[] scenes) {
+        this.scenes = scenes;
+        this.currentScene = scenes[0];
+    }
+
+    public void setStartingScene() {
+        this.currentScene = scenes[0];
+    }
+
+    public void setScene(int sceneID) {
         try{
             currentScene = scenes[sceneID];
         } catch(Exception e) {
@@ -11,7 +20,7 @@ static class SceneManager {
         }
     }
 
-    public static void setScene(String sceneName) {
+    public void setScene(String sceneName) {
         for(Scene scene : scenes) {
             if(scene.name == sceneName) {
                 currentScene = scene;

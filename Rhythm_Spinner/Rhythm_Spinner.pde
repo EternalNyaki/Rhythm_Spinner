@@ -2,6 +2,9 @@ import java.awt.event.KeyEvent;
 import java.lang.Runnable;
 import processing.sound.*;
 
+final PVector screenCenter = new PVector(640, 512);
+
+
 //Central spinner for rhythm game
 Spinner spinner = new Spinner();
 
@@ -26,9 +29,27 @@ float offset = 0;
 
 float tolerance = 0.1;
 
+SceneManager sceneManager = new SceneManager(new Scene[2]);
+
+Button[][] testMenuButtons = {{new Button(new PVector(screenCenter.x, screenCenter.y - 100), new PVector(100, 30), 0xFFFF9696, 0xFFFF96FF, "Test 1", () -> sceneManager.setScene(1))},
+                              {new Button(new PVector(screenCenter.x, screenCenter.y), new PVector(100, 30), 0xFFFF9696, 0xFFFF96FF, "Test 2", () -> println("Other button pressed"))}};
+
+Menu testMenu = new Menu(testMenuButtons);
+
+Scene testScene = new Scene("Test-Scene", () -> {}, () -> testMenu.draw(), () -> {
+    testMenu.changeSelection(keyCode);
+    if(InputManager.isArcadeButton(keyCode)) {
+        testMenu.selectedButton.press();
+    }
+});
+Scene emptyScene = new Scene("Empty", () -> {}, () -> text("there is nothing here", screenCenter.x, screenCenter.y, 100, 100));
+
 void setup() {
     //Setup screen
     size(1280, 1024);
+
+    sceneManager.scenes[0] = testScene;
+    sceneManager.scenes[1] = emptyScene;
 
     //Set shape display modes
     rectMode(CENTER);
@@ -56,6 +77,7 @@ void setup() {
     tonight = new Song(128, 0.127, 4, tonightFile, tonightChart, "tonight", "Rexlambo");
 
     Conductor.setSong(tonight);
+    sceneManager.setStartingScene();
 }
 
 void draw() {
@@ -63,14 +85,16 @@ void draw() {
     background(255);
 
     updateInputs();
+    sceneManager.currentScene.update();
 
     //Draw spinner
-    spinner.draw();
+    //spinner.draw();
+    sceneManager.currentScene.draw();
 
     //Draw notes
-    for(Note note : Conductor.chart) {
-        note.draw();
-    }
+    //for(Note note : Conductor.chart) {
+    //    note.draw();
+    //}
 }
 
 /**
@@ -80,58 +104,60 @@ void draw() {
 */
 void updateInputs() {
     //Update objects
-    spinner.update();
-    Conductor.update();
-    Conductor.curTime = (float) millis() / 1000;
-    if(Conductor.chart != null) {
-        for(Note note : Conductor.chart) {
-            note.update();
-        }
-    }
+    //spinner.update();
+    //Conductor.update();
+    //Conductor.curTime = (float) millis() / 1000;
+    //if(Conductor.chart != null) {
+    //    for(Note note : Conductor.chart) {
+    //        note.update();
+    //    }
+    //}
 
     //Remove missed notes
-    for(int i = 0; i < Conductor.chart.size(); i++) {
-        while(true) {
-            if(Conductor.chart.size() <= 0) {
-                break;
-            }
-            if(Conductor.songPosition > Conductor.chart.get(i).beat + tolerance) {
-                Conductor.chart.remove(i);
-                println("Miss :.(");
-            } else {
-                break;
-            }
-        }
-    }
+    //for(int i = 0; i < Conductor.chart.size(); i++) {
+    //    while(true) {
+    //        if(Conductor.chart.size() <= 0) {
+    //            break;
+    //        }
+    //        if(Conductor.songPosition > Conductor.chart.get(i).beat + tolerance) {
+    //            Conductor.chart.remove(i);
+    //            println("Miss :.(");
+    //        } else {
+    //            break;
+    //        }
+    //    }
+    //}
 }
 
 void keyPressed() {
     //Update inputs
     InputManager.addKey(keyCode);
     updateInputs();
+    sceneManager.currentScene.keyPressed();
 
     //If an arcade button is pressed, check if a note has been hit
-    if(InputManager.isArcadeButton(keyCode)) {
-        for(int i = 0; i < Conductor.chart.size(); i++) {
-            if(Conductor.chart.get(i).beat < Conductor.songPosition + tolerance &&
-               Conductor.chart.get(i).beat > Conductor.songPosition - tolerance &&
-               Conductor.chart.get(i).lane == spinner.selectedSegment) {
-                Conductor.chart.remove(i);
-                println("Hit!");
-            }
-        }
-    }
+    //if(InputManager.isArcadeButton(keyCode)) {
+    //    for(int i = 0; i < Conductor.chart.size(); i++) {
+    //        if(Conductor.chart.get(i).beat < Conductor.songPosition + tolerance &&
+    //           Conductor.chart.get(i).beat > Conductor.songPosition - tolerance &&
+    //           Conductor.chart.get(i).lane == spinner.selectedSegment) {
+    //            Conductor.chart.remove(i);
+    //            println("Hit!");
+    //        }
+    //    }
+    //}
 
     //If space is pressed, start song (for debugging and testing only, will be removed in future)
-    if(keyCode == 32) {
-        Conductor.playSong();
-    }
+    //if(keyCode == 32) {
+    //    Conductor.playSong();
+    //}
 }
 
 void keyReleased() {
     //Update inputs
     InputManager.removeKey(keyCode);
     updateInputs();
+    sceneManager.currentScene.keyReleased();
 }
 
 Note[] loadChartFromJSON(JSONObject json) {
