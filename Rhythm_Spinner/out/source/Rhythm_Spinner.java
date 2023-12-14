@@ -35,24 +35,28 @@ SoundFile noteHitFX;
 
 //Song audio files
 SoundFile topOfTheWaveFile;
+SoundFile happyMomentsFile;
 SoundFile cloudsFile;
 SoundFile tonightFile;
 SoundFile sunriseFile;
 
 //Song charts
 Note[] topOfTheWaveChart;
+Note[] happyMomentsChart;
 Note[] cloudsChart;
 Note[] tonightChart;
 Note[] sunriseChart;
 
 //Song cover images
 PImage topOfTheWaveCover;
+PImage happyMomentsCover;
 PImage cloudsCover;
 PImage tonightCover;
 PImage sunriseCover;
 
 //Songs
 Song topOfTheWave;
+Song happyMoments;
 Song clouds;
 Song tonight;
 Song sunrise;
@@ -88,7 +92,12 @@ Button[][] songSelectButtons = {{new Button(new PVector(928, 128), new PVector(7
                                     Conductor.playSong();
                                     score = 0;
                                 })},
-                                {new Button(new PVector(928, 320), new PVector(704, 128), 0xFFFF9696, 0xFFFF96FF, "", () -> {})},
+                                {new Button(new PVector(928, 320), new PVector(704, 128), 0xFFFF9696, 0xFFFF96FF, "", () -> {
+                                    Conductor.setSong(happyMoments);
+                                    sceneManager.setScene("Main-Game");
+                                    Conductor.playSong();
+                                    score = 0;
+                                })},
                                 {new Button(new PVector(928, 512), new PVector(704, 128), 0xFFFF9696, 0xFFFF96FF, "", () -> {
                                     Conductor.setSong(clouds);
                                     sceneManager.setScene("Main-Game");
@@ -163,8 +172,8 @@ Scene songSelectScene = new Scene("Song-Select", () -> {}, () -> {
     textAlign(LEFT, CENTER);
     text(topOfTheWave.title, 1024, 96, 512, 64);
     text(topOfTheWave.artist, 1024, 160, 512, 64);
-    text("", 1024, 288, 512, 64);
-    text("", 1024, 352, 512, 64);
+    text(happyMoments.title, 1024, 288, 512, 64);
+    text(happyMoments.artist, 1024, 352, 512, 64);
     text(clouds.title, 1024, 480, 512, 64);
     text(clouds.artist, 1024, 544, 512, 64);
     text(tonight.title, 1024, 672, 512, 64);
@@ -174,9 +183,9 @@ Scene songSelectScene = new Scene("Song-Select", () -> {}, () -> {
 
     //Draw song difficult on buttons
     textAlign(CENTER, CENTER);
-    text("6", 640, 128, 128, 128);
-    text("N", 640, 320, 128, 128);
-    text("9", 640, 512, 128, 128);
+    text("5", 640, 128, 128, 128);
+    text("9", 640, 320, 128, 128);
+    text("10", 640, 512, 128, 128);
     text("3", 640, 704, 128, 128);
     text("7", 640, 896, 128, 128);
 
@@ -186,22 +195,23 @@ Scene songSelectScene = new Scene("Song-Select", () -> {}, () -> {
             image(topOfTheWave.cover, 288, 288, 288, 288);
             text(topOfTheWave.title, 288, 576, 384, 64);
             text(topOfTheWave.artist, 288, 656, 384, 64);
-            text("6/10", 288, 736, 384, 64);
+            text("5/10", 288, 736, 384, 64);
             text(topOfTheWave.bpm + " BPM", 288, 816, 384, 64);
             break;
         
         case 1:
-            text("", 288, 576, 384, 64);
-            text("", 288, 656, 384, 64);
-            text("N/10", 288, 736, 384, 64);
-            text("" + " BPM", 288, 816, 384, 64);
+            image(happyMoments.cover, 288, 288, 288, 288);
+            text(happyMoments.title, 288, 576, 384, 64);
+            text(happyMoments.artist, 288, 656, 384, 64);
+            text("9/10", 288, 736, 384, 64);
+            text(happyMoments.bpm + " BPM", 288, 816, 384, 64);
             break;
 
         case 2:
             image(clouds.cover, 288, 288, 288, 288);
             text(clouds.title, 288, 576, 384, 64);
             text(clouds.artist, 288, 656, 384, 64);
-            text("9/10", 288, 736, 384, 64);
+            text("10/10", 288, 736, 384, 64);
             text(clouds.bpm + " BPM", 288, 816, 384, 64);
             break;
 
@@ -326,6 +336,7 @@ Scene mainGameScene = new Scene("Main-Game", () -> {
 
     //Go to results screen if song is over
     if(!Conductor.songFile.isPlaying() && !Conductor.inCountIn) {
+        timingIndicators.clear();
         sceneManager.setScene("Results");
         accuracy = (float) score / (Conductor.songData.chart.length * 100);
         if(accuracy > 0.95f) {
@@ -481,30 +492,35 @@ public void setup() {
     buttonClickFX = new SoundFile(this, "SFX/mixkit-single-classic-click-1116.wav");
     noteHitFX = new SoundFile(this, "SFX/Hi-Hat-Closed-Hit-C2-www.fesliyanstudios.com.wav");
     topOfTheWaveFile = new SoundFile(this, "Songs/Top-of-the-Wave-(Vlad-Gluschenko)/vlad-gluschenko-top-of-the-wave.wav");
+    happyMomentsFile = new SoundFile(this, "Songs/Happy-Moments-(EuGenius-Music)/eu-genius-happy-moments.wav");
     cloudsFile = new SoundFile(this, "Songs/Clouds-(MusicbyAden)/musicbyaden-clouds.wav");
     tonightFile = new SoundFile(this, "Songs/tonight-(Rexlambo)/rexlambo-tonight.wav");
     sunriseFile = new SoundFile(this, "Songs/Sunrise-(LiQWYD)/liqwyd-sunrise.wav");
 
     //Load charts
     JSONObject waveJSON = loadJSONObject("Songs/Top-of-the-Wave-(Vlad-Gluschenko)/chart.json");
+    JSONObject happyJSON = loadJSONObject("Songs/Happy-Moments-(EuGenius-Music)/chart.json");
     JSONObject cloudsJSON = loadJSONObject("Songs/Clouds-(MusicbyAden)/chart.json");
     JSONObject tonightJSON = loadJSONObject("Songs/tonight-(Rexlambo)/chart.json");
     JSONObject sunriseJSON = loadJSONObject("Songs/Sunrise-(LiQWYD)/chart.json");
     
     //Convert charts
     topOfTheWaveChart = loadChartFromJSON(waveJSON);
+    happyMomentsChart = loadChartFromJSON(happyJSON);
     cloudsChart = loadChartFromJSON(cloudsJSON);
     tonightChart = loadChartFromJSON(tonightJSON);
     sunriseChart = loadChartFromJSON(sunriseJSON);
 
     //Load images
     topOfTheWaveCover = loadImage("Songs/Top-of-the-Wave-(Vlad-Gluschenko)/vlad-gluschenko-top-of-the-wave.jpg");
+    happyMomentsCover = loadImage("Songs/Happy-Moments-(EuGenius-Music)/eu-genius-happy-moments.jpg");
     cloudsCover = loadImage("Songs/Clouds-(MusicbyAden)/musicbyaden-clouds.jpg");
     tonightCover = loadImage("Songs/tonight-(Rexlambo)/rexlambo-tonight.jpg");
     sunriseCover = loadImage("Songs/Sunrise-(LiQWYD)/liqwyd-sunrise.jpg");
 
     //Initialize songs
     topOfTheWave = new Song(126, -1.2f, 2.5f, topOfTheWaveFile, topOfTheWaveChart, "Top of the Wave", "Vlad Gluschenko", topOfTheWaveCover);
+    happyMoments = new Song(110, 2.178f, 0, happyMomentsFile, happyMomentsChart, "Happy Moments", "EuGenius Music", happyMomentsCover);
     clouds = new Song(120, 0, 4, cloudsFile, cloudsChart, "Clouds", "MusicbyAden", cloudsCover);
     tonight = new Song(128, 0.19f, 4, tonightFile, tonightChart, "tonight", "Rexlambo", tonightCover);
     sunrise = new Song(115, 2.12f, 0, sunriseFile, sunriseChart, "Sunrise", "LiQWYD", sunriseCover);
