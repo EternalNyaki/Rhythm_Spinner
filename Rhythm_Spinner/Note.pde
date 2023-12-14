@@ -21,8 +21,8 @@ class Note {
     * Called in updateInputs
     */
     public void update() {
-        this.position = new PVector(sin(radians(this.lane * 45)) * ((this.beat - Conductor.songPosition) * 200 + spinner.radius - offset) + 640,
-                                    cos(radians(this.lane * 45)) * ((this.beat - Conductor.songPosition) * 200 + spinner.radius - offset) + 512);
+        this.position = new PVector(cos(radians(this.lane * 45)) * ((this.beat - Conductor.songPosition) * 200 + spinner.radius) + screenCenter.x,
+                                    sin(radians(this.lane * 45)) * ((this.beat - Conductor.songPosition) * 200 + spinner.radius) + screenCenter.y);
     }
 
     /**
@@ -33,6 +33,10 @@ class Note {
     public void draw() {
         float radius = dist(screenCenter.x, screenCenter.y, this.position.x, this.position.y);
         noFill();
-        arc(screenCenter.x, screenCenter.y, radius, radius, radians(-22.5 + (this.lane * 45)), radians(-22.5 + ((this.lane + 1) * 45)));
+        stroke(0xFF50FFFF);
+        strokeWeight(10);
+        arc(screenCenter.x, screenCenter.y, radius, radius, radians(-22.5 + (this.lane * 45) + 2.5), radians(-22.5 + ((this.lane + 1) * 45) - 2.5));
+        stroke(0);
+        strokeWeight(1);
     }
 }

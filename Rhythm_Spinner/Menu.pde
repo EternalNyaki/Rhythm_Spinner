@@ -1,7 +1,16 @@
+/**
+* Menu class
+* Stores and manages a group of buttons (menu)
+*/
 class Menu {
+    //Grid of buttons in the menu
     private Button[][] buttons;
+
+    //The currently selected button
     public Button selectedButton;
-    private Index2D selectedIndex;
+
+    //The index (row and column) of the currently selected button
+    public Index2D selectedIndex;
 
     public Menu(Button[][] buttons) {
         this.buttons = buttons;
@@ -15,7 +24,14 @@ class Menu {
         this.selectedIndex = startingIndex;
     }
 
+    /**
+    * Change Selection method
+    * Changes the selected button based on the given key
+    *
+    * @param The key code of the pressed key
+    */
     public void changeSelection(int key) {
+        //Try-catch to catch index out of bounds errors so I don't have to test for them in each case
         try {
             switch (key) {
                 case KeyEvent.VK_RIGHT:
@@ -48,6 +64,10 @@ class Menu {
         }
     }
 
+    /**
+    * Draw method
+    * Draws all buttons in the menu
+    */
     public void draw() {
         for(int i = 0; i < this.buttons.length; i++) {
             for(int j = 0; j < this.buttons[i].length; j++) {

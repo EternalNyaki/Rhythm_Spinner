@@ -11,33 +11,46 @@ static class Conductor {
     //Time before the song actually starts in the audio file (to account for space required for metadata) (in seconds)
     private static float offset;
 
+    //Time to wait before starting the song (in beats)
     private static float countIn;
-
+    //Time at which the song began playing (start of count in) (in seconds)
     private static float startTime;
+    //The current program time (in seconds)
+    public static float curTime;
+
 
     //Position in the current song (in beats)
     public static float songPosition;
     //Audio file for the song currently being played
-    private static SoundFile songFile;
+    public static SoundFile songFile;
+    //Song object of the song currently being played, for accessing extra information
+    public static Song songData;
 
+    //A copy of the chart of the current song (must be a copy, as notes will be removed from this version during runtime)
     public static ArrayList<Note> chart = new ArrayList<Note>();
 
-    private static boolean playing = false;
-
-    public static float curTime;
+    //Whether or not the song is currently in count in, to ensure songs don't end before they start
+    public static boolean inCountIn = false;
 
     /**
     * Update method
-    * Runs in updateInputs()
+    * Updates the conductor
     */
     public static void update() {
         if(songFile != null) {
-            if(playing && !songFile.isPlaying() && curTime - startTime > countIn * crotchet) {
-                println(curTime - startTime);
-                println(countIn * crotchet);
-                songFile.play();
+            if(inCountIn) {
+                if(!songFile.isPlaying() && curTime - startTime > countIn * crotchet) {
+                    //End count in, start playing the song
+                    songFile.play();
+                    inCountIn = false;
+                }
+
+                //Set song position
+                songPosition = ((curTime - startTime) / crotchet) - countIn - (offset / crotchet);
+            } else {
+                //Update song position
+                songPosition = (songFile.position() - offset) / crotchet;
             }
-            songPosition = (songFile.position() - offset) / crotchet;
         }
     }
 
@@ -53,16 +66,21 @@ static class Conductor {
         offset = song.offset;
         countIn = song.countIn;
         songFile = song.songFile;
+        songData = song;
         chart.clear();
         for(Note note : song.chart) {
             chart.add(note);
         }
     }
 
+    /**
+    * Play Song method
+    * Begins playing the current song
+    */
     public static void playSong() {
-        if(!playing && songFile != null) {
+        if(!inCountIn && songFile != null) {
             startTime = curTime;
-            playing = true;
+            inCountIn = true;
         }
     }
 }

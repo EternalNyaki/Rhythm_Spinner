@@ -7,6 +7,10 @@ static class InputManager {
     //List of currently held keys
     public static ArrayList<Integer> keys = new ArrayList<Integer>();
 
+    //Buttons with special functions
+    public static int selectButton = KeyEvent.VK_Z;
+    public static int backButton = KeyEvent.VK_X;
+
     /**
     * Add Key method
     * Adds a key to the input manager

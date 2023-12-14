@@ -25,7 +25,7 @@ class Spinner {
 
     /**
     * Update method
-    * Runs in updateInputs()
+    * Updates the spinner
     */
     public void update() {
         selectedSegment = InputManager.getDirection();
@@ -34,16 +34,15 @@ class Spinner {
     /**
     * Draw method
     * Draws the spinner to the screen
-    * Runs in draw()
     */
     public void draw() {
         for(int i = 0; i < 8; i++) {
+            fill(mainColor);
+            arc(position.x, position.y, radius + 20, radius + 20, radians(-22.5 + (i * 45)), radians(-22.5 + ((i + 1) * 45)), PIE);
+
             if(i == selectedSegment) {
                 fill(selectedColor);
-            } else {
-                fill(mainColor);
             }
-
             arc(position.x, position.y, radius, radius, radians(-22.5 + (i * 45)), radians(-22.5 + ((i + 1) * 45)), PIE);
         }
     }

@@ -8,6 +8,7 @@ class Song {
     //Time before the song actually starts in the audio file (to account for space required for metadata) (in seconds)
     public float offset;
 
+    //Time to wait before starting the song (in beats)
     public float countIn;
 
     //Audio file associated with song
@@ -18,7 +19,10 @@ class Song {
     //Name of song and artist (not currently used)
     public String title, artist;
 
-    Song(int bpm, float offset, float countIn, SoundFile songFile, Note[] chart, String title, String artist) {
+    //Cover image for the song, to be displayed in song select menu
+    public PImage cover;
+
+    Song(int bpm, float offset, float countIn, SoundFile songFile, Note[] chart, String title, String artist, PImage cover) {
         this.bpm = bpm;
         this.offset = offset;
         this.countIn = countIn;
@@ -26,5 +30,6 @@ class Song {
         this.chart = chart;
         this.title = title;
         this.artist = artist;
+        this.cover = cover;
     }
 }
